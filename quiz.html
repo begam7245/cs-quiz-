@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Computer Science Quiz</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #001f3f; /* Navy blue background */
+            padding: 20px;
+            color: #fff; /* White text color for better contrast */
+        }
+        .quiz-container {
+            background: #ffffff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            max-width: 600px;
+            margin: auto;
+            text-align: center;
+            color: #333; /* Dark text color for quiz container */
+        }
+        h1 {
+            color: #001f3f; /* Navy blue for the title */
+        }
+        .question {
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+        .answers {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin: 5px 0;
+            cursor: pointer;
+        }
+        button {
+            background-color: #001f3f; /* Navy blue button */
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #0056b3; /* Lighter blue on hover */
+        }
+        .result {
+            margin-top: 20px;
+            font-weight: bold;
+            font-size: 18px;
+        }
+        .incorrect {
+            color: red; /* Red color for incorrect answers */
+        }
+    </style>
+</head>
+<body>
+
+<div class="quiz-container">
+    <h1>Computer Science Quiz</h1>
+    <div id="quiz"></div>
+    <button id="submit">Submit Answers</button>
+    <div class="result" id="result"></div>
+</div>
+
+<script>
+    const questions = [
+        {
+            question: "What does CPU stand for?",
+            answers: ["Central Processing Unit", "Central Process Unit", "Computer Personal Unit", "Central Programming Unit"],
+            correct: 0
+        },
+        {
+            question: "Which language is primarily used for web development?",
+            answers: ["Python", "Java", "HTML", "C++"],
+            correct: 2
+        },
+        {
+            question: "What is the main function of an operating system?",
+            answers: ["Manage hardware resources", "Run applications", "Provide security", "All of the above"],
+            correct: 3
+        },
+        {
+            question: "What does RAM stand for?",
+            answers: ["Read Access Memory", "Random Access Memory", "Read And Memory", "Random Access Module"],
+            correct: 1
+        },
+        {
+            question: "Which of the following is a version control system?",
+            answers: ["Git", "Jira", "Slack", "Trello"],
+            correct: 0
+        },
+        {
+            question: "What does HTML stand for?",
+            answers: ["Hyper Text Markup Language", "High Text Markup Language", "Hyper Tabular Markup Language", "None of the above"],
+            correct: 0
+        },
+        {
+            question: "Which of the following is a programming language?",
+            answers: ["HTML", "CSS", "JavaScript", "All of the above"],
+            correct: 2
+        },
+        {
+            question: "What is the purpose of a compiler?",
+            answers: ["Translate source code to machine code", "Execute code", "Debug code", "None of the above"],
+            correct: 0
+        },
+        {
+            question: "Which data structure uses LIFO?",
+            answers: ["Queue", "Stack", "Array", "Linked List"],
+            correct: 1
+        },
+        {
+            question: "What is the time complexity of binary search?",
+            answers: ["O(n)", "O(log n)", "O(n log n)", "O(1)"],
+            correct: 1
+        },
+        {
+            question: "Which of the following is not a database management system?",
+            answers: ["MySQL", "PostgreSQL", "MongoDB", "HTML"],
+            correct: 3
+        },
+        {
+            question: "What does API stand for?",
+                        answers: ["Application Programming Interface", "Application Process Interface", "Application Programming Integration", "None of the above"],
+            correct: 0
+        },
+        {
+            question: "What is the primary purpose of a firewall?",
+            answers: ["To cool down servers", "To prevent unauthorized access", "To speed up the internet", "To store data"],
+            correct: 1
+        },
+        {
+            question: "Which of the following is a front-end framework?",
+            answers: ["Django", "Flask", "React", "Node.js"],
+            correct: 2
+        },
+        {
+            question: "What does SQL stand for?",
+            answers: ["Structured Query Language", "Structured Question Language", "Simple Query Language", "None of the above"],
+            correct: 0
+        },
+        {
+            question: "Which of the following is a NoSQL database?",
+            answers: ["MySQL", "PostgreSQL", "MongoDB", "SQLite"],
+            correct: 2
+        },
+        {
+            question: "What is the main purpose of an IDE?",
+            answers: ["To write code", "To compile code", "To debug code", "All of the above"],
+            correct: 3
+        },
+        {
+            question: "Which algorithm is used for sorting?",
+            answers: ["Bubble Sort", "Merge Sort", "Quick Sort", "All of the above"],
+            correct: 3
+        },
+        {
+            question: "What is a common use of a linked list?",
+            answers: ["Dynamic memory allocation", "Static memory allocation", "Data storage", "None of the above"],
+            correct: 0
+        }
+    ];
+
+    const quizContainer = document.getElementById('quiz');
+    const resultContainer = document.getElementById('result');
+    const submitButton = document.getElementById('submit');
+
+    function buildQuiz() {
+        const output = [];
+
+        questions.forEach((currentQuestion, questionNumber) => {
+            const answers = [];
+
+            for (let i = 0; i < currentQuestion.answers.length; i++) {
+                answers.push(
+                    `<label>
+                        <input type="radio" name="question${questionNumber}" value="${i}">
+                        ${currentQuestion.answers[i]}
+                    </label>`
+                );
+            }
+
+            output.push(
+                `<div class="question">${currentQuestion.question}</div>
+                <div class="answers">${answers.join('')}</div>`
+            );
+        });
+
+        quizContainer.innerHTML = output.join('');
+    }
+
+    function showResults() {
+        const answerContainers = quizContainer.querySelectorAll('.answers');
+        let score = 0;
+        let resultHtml = '';
+
+        questions.forEach((currentQuestion, questionNumber) => {
+            const answerContainer = answerContainers[questionNumber];
+            const selector = `input[name=question${questionNumber}]:checked`;
+            const userAnswer = (answerContainer.querySelector(selector) || {}).value;
+
+            if (userAnswer == currentQuestion.correct) {
+                score++;
+            } else {
+                resultHtml += `<div class="incorrect">Question: ${currentQuestion.question}<br>Your answer: ${currentQuestion.answers[userAnswer]}<br>Correct answer: ${currentQuestion.answers[currentQuestion.correct]}</div><br>`;
+            }
+        });
+
+        resultContainer.innerHTML = `Your final score is: ${score} out of ${questions.length}<br><br>${resultHtml}`;
+    }
+
+    buildQuiz();
+
+    submitButton.addEventListener('click', showResults);
+</script>
